@@ -86,19 +86,33 @@ export class TransferResolver {
 
   // get by link
   @Query(() => Transfer, { nullable: true })
-  async getTransferByLink(
+  async getTransferByLinkToken(
     @Arg("token", () => String) token: string
   ): Promise<Transfer | null> {
     const link = await linkRepository.findOne({
+      select: ["id"],
       where: { token },
-      relations: ["transfer", "transfer.createdBy", "transfer.link"],
     });
 
-    if (!link) {
+    if (
+      !link ||
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      (link.endDate && link.endDate < new Date()) ||
+      link.startDate > new Date()
+    ) {
       return null;
     }
 
-    return link.transfer;
+    const transfer = await transferRepository.findOne({
+      where: { link: { id: link.id } },
+      relations: ["createdBy", "files", "link"],
+    });
+
+    if (!transfer) {
+      return null;
+    }
+
+    return transfer;
   }
 
   @Authorized()

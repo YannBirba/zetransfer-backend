@@ -43,6 +43,7 @@ export class Transfer extends BaseEntity {
   @OneToMany(() => File, (file: File) => file.transfer, { nullable: true })
   files: File[];
 
+  @Field(() => Link, { nullable: true })
   @OneToOne(() => Link, (link) => link.transfer)
   link: Link;
 
