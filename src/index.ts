@@ -173,7 +173,6 @@ bootstrap()
         // eslint-disable-next-line array-callback-return
         const files: { path: string; name: string; signature: string }[] = [];
         for (const file of filesData) {
-          console.log({ ...filesData });
           // eslint-disable-next-line no-await-in-loop
           const isOriginalHash = await verifyHash(
             `uploads/${String(file.fileName)}`,
@@ -185,10 +184,8 @@ bootstrap()
               name: file.name,
               signature: file.signature,
             });
-            console.log(files);
           }
         }
-        console.log(files);
         // @ts-expect-error shit lib
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
         return res.zip(files);
