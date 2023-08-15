@@ -23,7 +23,6 @@ import { verifyHash } from "./utils/signatures/verifyHash";
 
 import { shouldCompress } from "./utils/shouldCompress";
 
-
 const GRAPHQL_PORT = 5000;
 const EXPRESS_PORT = 4000;
 let schema: GraphQLSchema;

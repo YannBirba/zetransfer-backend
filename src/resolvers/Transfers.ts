@@ -84,6 +84,23 @@ export class TransferResolver {
     return transfer;
   }
 
+  // get by link
+  @Query(() => Transfer, { nullable: true })
+  async getTransferByLink(
+    @Arg("token", () => String) token: string
+  ): Promise<Transfer | null> {
+    const link = await linkRepository.findOne({
+      where: { token },
+      relations: ["transfer", "transfer.createdBy", "transfer.link"],
+    });
+
+    if (!link) {
+      return null;
+    }
+
+    return link.transfer;
+  }
+
   @Authorized()
   @Query(() => [User], { nullable: true })
   async getCurrentUserTransferUsers(
@@ -196,12 +213,14 @@ export class TransferResolver {
       newTransfer.description = data.description;
       newTransfer.isPrivate = data.isPrivate;
       newTransfer.createdBy = user;
+      newTransfer.createdAt = new Date();
+      newTransfer.updatedAt = new Date();
 
+      let transferSaved;
       if (!data.isPrivate) {
         const link = new Link();
         link.createdAt = new Date();
         link.updatedAt = new Date();
-        link.token = "token";
         link.startDate = new Date(data.startDate);
         if (data.endDate) {
           link.endDate = new Date(data.endDate);
@@ -216,20 +235,12 @@ export class TransferResolver {
           link.endDate = new Date(data.endDate);
         }
         const savedLink = await linkRepository.save(link);
-
         newTransfer.link = savedLink;
+        transferSaved = await transferRepository.save(newTransfer);
+      } else {
+        transferSaved = await transferRepository.save(newTransfer);
       }
-
-      newTransfer.createdAt = new Date();
-      newTransfer.updatedAt = new Date();
-
-      const transfer = await transferRepository.save(newTransfer);
-
-      if (!data.isPrivate) {
-        transfer.link = await transfer.loadRelation("link");
-      }
-
-      return transfer;
+      return transferSaved;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);

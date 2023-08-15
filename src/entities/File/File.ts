@@ -1,7 +1,7 @@
-import { ObjectType, Field, ID } from "type-graphql";
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
-import { Transfer } from "../Transfer/Transfer";
+import { Field, ID, ObjectType } from "type-graphql";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { BaseEntity } from "../../utils/loadRelation";
+import { Transfer } from "../Transfer/Transfer";
 
 @Entity()
 @ObjectType()
@@ -28,17 +28,17 @@ export class File extends BaseEntity {
 
   @Column()
   @Field()
-  createdAt: Date;
-
-  @Column()
-  @Field()
-  updatedAt: Date;
-
-  @Column()
-  @Field()
   signature: string;
 
   @Field(() => Transfer, { nullable: false })
   @ManyToOne(() => Transfer, (transfer) => transfer.files, { nullable: false })
   transfer: Transfer;
+
+  @Column()
+  @Field()
+  createdAt: Date;
+
+  @Column()
+  @Field()
+  updatedAt: Date;
 }

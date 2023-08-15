@@ -1,13 +1,13 @@
-import { ObjectType, Field, ID } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
+  Entity,
   JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
 } from "typeorm";
-import { ZeTransferSubscriptionPlan } from "../ZeTransferSubscriptionPlan/ZeTransferSubscriptionPlan";
 import { BaseEntity } from "../../utils/loadRelation";
+import { ZeTransferSubscriptionPlan } from "../ZeTransferSubscriptionPlan/ZeTransferSubscriptionPlan";
 
 @Entity()
 @ObjectType()
@@ -24,6 +24,13 @@ export class ZeTransferSubscription extends BaseEntity {
   @Field()
   isYearly: boolean;
 
+  @Field(() => ZeTransferSubscriptionPlan, { nullable: false })
+  @OneToOne(() => ZeTransferSubscriptionPlan, {
+    nullable: false,
+  })
+  @JoinColumn()
+  zeTransferSubscriptionPlan: ZeTransferSubscriptionPlan;
+
   @Column()
   @Field()
   createdAt: Date;
@@ -31,11 +38,4 @@ export class ZeTransferSubscription extends BaseEntity {
   @Column()
   @Field()
   updatedAt: Date;
-
-  @Field(() => ZeTransferSubscriptionPlan, { nullable: false })
-  @OneToOne(() => ZeTransferSubscriptionPlan, {
-    nullable: false,
-  })
-  @JoinColumn()
-  zeTransferSubscriptionPlan: ZeTransferSubscriptionPlan;
 }

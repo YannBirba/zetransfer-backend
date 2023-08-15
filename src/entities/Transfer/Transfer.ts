@@ -1,19 +1,19 @@
-import { ObjectType, Field, ID } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  OneToMany,
-  JoinTable,
+  Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
+  PrimaryGeneratedColumn,
 } from "typeorm";
-import { User } from "../User/User";
-import { File } from "../File/File";
 import { BaseEntity } from "../../utils/loadRelation";
+import { File } from "../File/File";
 import { Link } from "../Link/Link";
+import { User } from "../User/User";
 
 @Entity()
 @ObjectType()
@@ -34,19 +34,6 @@ export class Transfer extends BaseEntity {
   @Field()
   isPrivate: boolean;
 
-  @Column()
-  @Field()
-  createdAt: Date;
-
-  @Column()
-  @Field()
-  updatedAt: Date;
-
-  @Field(() => User, { nullable: false })
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn()
-  createdBy: User;
-
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user: User) => user.transfers, { nullable: true })
   @JoinTable()
@@ -56,8 +43,19 @@ export class Transfer extends BaseEntity {
   @OneToMany(() => File, (file: File) => file.transfer, { nullable: true })
   files: File[];
 
-  @Field(() => Link, { nullable: true, defaultValue: null })
-  @OneToOne(() => Link, { nullable: true })
-  @JoinColumn()
+  @OneToOne(() => Link, (link) => link.transfer)
   link: Link;
+
+  @Field(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn()
+  createdBy: User;
+
+  @Column()
+  @Field()
+  createdAt: Date;
+
+  @Column()
+  @Field()
+  updatedAt: Date;
 }

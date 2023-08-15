@@ -1,16 +1,16 @@
-import { ObjectType, Field, ID } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
-  OneToOne,
+  Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
 } from "typeorm";
+import { BaseEntity } from "../../utils/loadRelation";
 import { Transfer } from "../Transfer/Transfer";
 import { ZeTransferSubscription } from "../ZeTransferSubscription/ZeTransferSubscription";
-import { BaseEntity } from "../../utils/loadRelation";
 
 @Entity()
 @ObjectType()
@@ -38,14 +38,6 @@ export class User extends BaseEntity {
   @Field({ defaultValue: true })
   isActive: boolean;
 
-  @Column()
-  @Field()
-  createdAt: Date;
-
-  @Column()
-  @Field()
-  updatedAt: Date;
-
   @ManyToMany(() => User, (user) => user.contacts)
   parent: User[];
 
@@ -62,4 +54,12 @@ export class User extends BaseEntity {
   @OneToOne(() => ZeTransferSubscription, { nullable: true })
   @JoinColumn()
   zeTransferSubscription: ZeTransferSubscription;
+
+  @Column()
+  @Field()
+  createdAt: Date;
+
+  @Column()
+  @Field()
+  updatedAt: Date;
 }
