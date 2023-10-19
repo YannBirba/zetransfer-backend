@@ -7,7 +7,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Check out code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
             - name: Install pnpm and run tests
               run: npm add -g pnpm && pnpm install --no-frozen-lockfile && pnpm test:ci
     docker:
